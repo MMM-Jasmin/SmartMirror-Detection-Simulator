@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="SmartMirror-Detection-Simulator.css" />
+	</head>
+	<body>
+		<div id="widget" class="widget">
+			<button id="hideButton" class="hideButton">hide</button>
+			<div id="content" class="content">
+				<div class="headline">Debug Helper</div>
+				<div id="gestures" class="category">
+					<p>
+						<input type="checkbox" id="gestureCheckbox" class="categoryCheckbox" />
+						<label>Gesture</label>
+					</p>
+					<form class="gestureForm">
+						<div class="formEntry">
+							<label>Name</label>
+							<select class="entryName" name="name"></select>
+						</div>
+						<div class="formEntry">
+							<label>TrackID</label>
+							<input
+								class="entryTrackid"
+								name="TrackID"
+								type="number"
+								min="0"
+								max="999"
+								placeholder="id"
+								value="0"
+								for="gestureForm"
+							/>
+						</div>
+						<div class="formEntry">
+							<label>Center</label>
+							<span>
+								<input class="entryPosx" name="posx" type="number" min="0" max="9999" placeholder="x" value="200" />
+								<input class="entryPosy" name="posy" type="number" min="0" max="9999" placeholder="y" value="200" />
+							</span>
+						</div>
+						<div class="formEntry">
+							<label>Dim</label>
+							<span>
+								<input class="entryWidth" name="w" type="number" min="0" max="9999" placeholder="w" value="100" />
+								<input class="entryHeight" name="h" type="number" min="0" max="9999" placeholder="h" value="200" />
+							</span>
+						</div>
+						<div class="formEntry">
+							<label>Mousemove</label>
+							<input type="checkbox" class="entryMove" name="move" />
+							<select class="entryMovekey" name="movekey">
+								<option value="Ctrl">Ctrl</option>
+								<option value="Shift">Shift</option>
+								<option value="Alt">Alt</option>
+							</select>
+						</div>
+						<div class="formEntry">
+							<label>Scale</label>
+							<input type="checkbox" class="entryScale" name="scale" />
+						</div>
+						<button type="button" class="deleteButton ">x</button>
+						<button type="button" class="addButton ">+</button>
+					</form>
+				</div>
+
+				<div id="objects" class="category">
+					<p>
+						<input type="checkbox" id="objectCheckbox" class="categoryCheckbox" />
+						<label>Object</label>
+					</p>
+					<form class="objectForm">
+						<!-- <div class="formEntry">
+							<label>Name</label>
+							<input class="entryName" name="name" type="text" placeholder="name" value="person" />
+						</div> -->
+						<div class="formEntry">
+							<label>Name</label>
+							<select class="entryName" name="name"></select>
+						</div>
+						<div class="formEntry">
+							<label>TrackID</label>
+							<input class="entryTrackid" name="TrackID" type="number" min="0" max="999" placeholder="id" value="0" />
+						</div>
+						<div class="formEntry">
+							<label>Center</label>
+							<span>
+								<input class="entryPosx" name="posx" type="number" min="0" max="9999" placeholder="x" value="200" />
+								<input class="entryPosy" name="posy" type="number" min="0" max="9999" placeholder="y" value="200" />
+							</span>
+						</div>
+						<div class="formEntry">
+							<label>Dim</label>
+							<span>
+								<input class="entryWidth" name="w" type="number" min="0" max="9999" placeholder="w" value="200" />
+								<input class="entryHeight" name="h" type="number" min="0" max="9999" placeholder="h" value="200" />
+							</span>
+						</div>
+						<div class="formEntry">
+							<label>Mousemove</label>
+							<input type="checkbox" class="entryMove" name="move" />
+							<select class="entryMovekey" name="movekey">
+								<option value="Ctrl">Ctrl</option>
+								<option value="Shift">Shift</option>
+								<option value="Alt">Alt</option>
+							</select>
+						</div>
+						<div class="formEntry">
+							<label>Scale</label>
+							<input type="checkbox" class="entryScale" name="scale" />
+						</div>
+						<button type="button" class="deleteButton ">x</button>
+						<button type="button" class="addButton ">+</button>
+					</form>
+				</div>
+
+				<div id="faces" class="category">
+					<p>
+						<input type="checkbox" id="faceCheckbox" class="categoryCheckbox" />
+						<label>Face</label>
+					</p>
+					<form class="faceForm">
+						<div class="formEntry">
+							<label>Name</label>
+							<input class="entryName" name="name" type="text" placeholder="name" value="unknown" />
+						</div>
+						<div class="formEntry">
+							<label>TrackID</label>
+							<input class="entryTrackid" name="TrackID" type="number" min="0" max="999" placeholder="id" value="0" />
+						</div>
+						<div class="formEntry">
+							<label>Center</label>
+							<span>
+								<input class="entryPosx" name="posx" type="number" min="0" max="9999" placeholder="x" value="200" />
+								<input class="entryPosy" name="posy" type="number" min="0" max="9999" placeholder="y" value="200" />
+							</span>
+						</div>
+						<div class="formEntry">
+							<label>Dim</label>
+							<span>
+								<input class="entryWidth" name="w" type="number" min="0" max="9999" placeholder="w" value="100" />
+								<input class="entryHeight" name="h" type="number" min="0" max="9999" placeholder="h" value="100" />
+							</span>
+						</div>
+						<div class="formEntry">
+							<label>ID</label>
+							<input class="entryId" name="id" type="number" min="0" max="999" placeholder="id" value="0" />
+						</div>
+						<div class="formEntry">
+							<label>Confidence</label>
+							<input
+								class="entryConfidence"
+								name="confidence"
+								type="number"
+								min="0.0"
+								max="1.0"
+								placeholder="id"
+								value="0.2"
+							/>
+						</div>
+						<div class="formEntry">
+							<label>Mousemove</label>
+							<input type="checkbox" class="entryMove" name="move" />
+							<select class="entryMovekey" name="movekey">
+								<option value="Ctrl">Ctrl</option>
+								<option value="Shift">Shift</option>
+								<option value="Alt">Alt</option>
+							</select>
+						</div>
+						<div class="formEntry">
+							<label>Scale</label>
+							<input type="checkbox" class="entryScale" name="scale" />
+						</div>
+						<button type="button" class="deleteButton ">x</button>
+						<button type="button" class="addButton ">+</button>
+					</form>
+				</div>
+
+				<div id="persons" class="category">
+					<p>
+						<input type="checkbox" id="personCheckbox" class="categoryCheckbox" />
+						<label>Person</label>
+					</p>
+					<form class="personForm">
+						<!-- <div class="formEntry">
+							<label>Name</label>
+							<input class="entryName" name="name" type="text" placeholder="name" value="unknown" />
+						</div> -->
+						<div class="formEntry">
+							<label>TrackID</label>
+							<input
+								class="entryTrackid"
+								name="TrackID"
+								type="number"
+								min="0"
+								max="999"
+								placeholder="id"
+								width="30px"
+								value="0"
+							/>
+						</div>
+						<div class="formEntry">
+							<label>ID</label>
+							<input
+								class="entryId"
+								name="id"
+								type="number"
+								min="0"
+								max="999"
+								placeholder="id"
+								width="30px"
+								value="0"
+							/>
+						</div>
+						<button type="button" class="deleteButton ">x</button>
+						<button type="button" class="addButton ">+</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

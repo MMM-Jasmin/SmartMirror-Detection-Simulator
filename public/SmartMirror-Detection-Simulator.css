@@ -1,0 +1,127 @@
+.hidden {
+	display: none !important;
+}
+
+.headline {
+	position: absolute;
+	top: 0px;
+	left: 40%;
+	font-size: larger;
+}
+
+.widget {
+	position: relative;
+	z-index: 100;
+}
+
+.content {
+	text-align: left;
+	font-size: 18px;
+	border: 2px solid white;
+	border-radius: 10px;
+	padding: 20px;
+	background-color: #1e1e1e;
+	transform: scale(1);
+	transform-origin: top right;
+	transition: transform 1s ease-in-out;
+	overflow-y: auto;
+}
+
+.collapsed {
+	transform: scale(0);
+}
+
+.hideButton {
+	position: absolute;
+	z-index: 100;
+	right: 0px;
+	background-color: #1e1e1e;
+	border: 2px solid white;
+	border-radius: 5px;
+	color: white;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 18px;
+}
+
+.addButton {
+	color: green;
+	border-radius: 5px;
+	margin-left: 10px;
+	text-align: center;
+}
+
+.deleteButton {
+	color: red;
+	border-radius: 5px;
+	margin-left: 10px;
+	text-align: center;
+}
+
+div.category {
+	/* white-space: nowrap; */
+	align-items: center;
+}
+
+form {
+	display: inline-block;
+	white-space: normal;
+	background-color: #2e2e2e;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.formEntry {
+	white-space: nowrap;
+	display: inline;
+}
+
+label {
+	vertical-align: middle;
+}
+
+input[type="checkbox"] {
+	display: inline;
+	vertical-align: middle;
+	transform: scale(1.5);
+	background-color: lightgray;
+}
+
+input[type="text"] {
+	text-align: center;
+	width: 100px;
+	background-color: lightgray;
+	border: none;
+	border-radius: 5px;
+	vertical-align: middle;
+}
+
+input[type="number"] {
+	text-align: center;
+	width: 40px;
+	background-color: lightgray;
+	border: none;
+	border-radius: 5px;
+	vertical-align: middle;
+	-moz-appearance: textfield;
+}
+
+select {
+	text-align: center;
+	background-color: lightgray;
+	border: none;
+	border-radius: 5px;
+	vertical-align: middle;
+}
+
+select.entryName {
+	width: 100px;
+}
+
+/* Hide arrows in number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
