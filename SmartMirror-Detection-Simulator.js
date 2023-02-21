@@ -15,6 +15,8 @@ Module.register("SmartMirror-Detection-Simulator", {
 		forceShow: true,
 		widgetWidth: 0,
 		widgetHeight: 0,
+
+		wheelDistanceEnabled: true, // Enable setting gesture and object distance using the mouse wheel
 	},
 
 	lastMousemove: 0.0,
@@ -40,6 +42,8 @@ Module.register("SmartMirror-Detection-Simulator", {
 	simObjects: false,
 	simFaces: false,
 	simPersons: false,
+	wheelDistance: 1000, // Starting distance to the camera in mm
+	wheelDistanceIncement: 10, // Mouse wheel distance increment in mm
 
 	/**
 	 * Requests any additional stylesheets that need to be loaded.
@@ -83,6 +87,11 @@ Module.register("SmartMirror-Detection-Simulator", {
 			var scale = self.wheelScale;
 			self.wheelScale += event.deltaY * -0.001;
 			self.wheelScale = Math.min(Math.max(-100.0, self.wheelScale), 100.0);
+			if (self.config.wheelDistanceEnabled) {
+				self.wheelDistance += Math.sign(event.deltaY) * 10; // 1cm increments for mouse wheel distance change
+				self.wheelDistance = Math.min(Math.max(200.0, self.wheelDistance), 4000.0); // min: 20cm, max: 4m
+				console.debug("wheelDistance = " + self.wheelDistance);
+			}
 		});
 		document.addEventListener("mousemove", this.updatePos.bind(this));
 
@@ -306,7 +315,8 @@ Module.register("SmartMirror-Detection-Simulator", {
 			if (key === "move" || key === "movekey" || key === "scale" || key === "scalevalue") {
 				meta[key] = value;
 			} else {
-				if (key === "TrackID" || key === "id") {
+				//if (key === "TrackID" || key === "id") {
+				if (key === "TrackID" || key === "ID") {
 					entry[key] = parseInt(value);
 				} else if (key === "confidence") {
 					entry[key] = parseFloat(value);
@@ -368,6 +378,7 @@ Module.register("SmartMirror-Detection-Simulator", {
 
 			// Create recognized person placeholder
 			var recPersons = {};
+			/*
 			for (var i = 0; i < this.persons.length; i++) {
 				recPersons[this.persons[i]["TrackID"]] = this.persons[i];
 				recPersons[this.persons[i]["TrackID"]]["name"] = "unknown";
@@ -379,6 +390,26 @@ Module.register("SmartMirror-Detection-Simulator", {
 					center: [0.1, 0.1],
 					w_h: [0.01, 0.01],
 					name: "unknown",
+				};
+			}
+			*/
+			for (var i = 0; i < this.persons.length; i++) {
+				recPersons[this.persons[i]["TrackID"]] = this.persons[i];
+				recPersons[this.persons[i]["TrackID"]]["name"] = "Placeholder";
+				recPersons[this.persons[i]["TrackID"]]["center"] = [0.1, 0.1];
+				recPersons[this.persons[i]["TrackID"]]["w_h"] = [0.05, 0.05];
+				recPersons[this.persons[i]["TrackID"]]["gestures"] = [];
+				recPersons[this.persons[i]["TrackID"]]["face"] = {
+					ID: this.persons[i]["ID"],
+					center: [0.5, 0.5],
+					w_h: [0.0, 1.0],
+					name: "person",
+					confidence: 0.9,
+					emotion: 4,
+					mask_state: 0,
+					//bbox: {x: Math.floor(this.config.image_width * 0.1 - 0.01) , y: Math.floor(this.config.image_height * 0.1 - 0.01), w: Math.floor(this.config.image_width * 0.1), h: Math.floor(this.config.image_height * 0.1)},
+					bbox: {x: 0 , y: 0, w: this.config.image_width, h: this.config.image_height},
+					//"landmarks": [623.5, 321.199982, 676.247986, 310.633331, 655.533386, 353.283356, 653.666687, 383.966675, 695.524963, 374.56665]
 				};
 			}
 
@@ -405,6 +436,14 @@ Module.register("SmartMirror-Detection-Simulator", {
 						}
 					}
 					for (var i = 0; i < sendData.length; i++) {
+						// Mousewheel distance
+						if (this.config.wheelDistanceEnabled) {
+							if (cat < 2) {
+								// Add distance to gestures and objects
+								sendData[i]["distance"] = this.wheelDistance;
+							}
+						}
+					
 						// Mousewheel scaling
 						if (simMeta[cat][i]["scale"] === "on") {
 							sendData[i]["w"] *= this.wheelScale;
@@ -431,6 +470,7 @@ Module.register("SmartMirror-Detection-Simulator", {
 									if (sendData[i]["name"] === "person") {
 										recPersons[sendData[i]["TrackID"]]["center"] = sendData[i]["center"];
 										recPersons[sendData[i]["TrackID"]]["w_h"] = sendData[i]["w_h"];
+										//console.debug("DEBUG: DetSim person rec");
 									}
 								} else if (cat == 2) {
 									recPersons[sendData[i]["TrackID"]]["face"] = sendData[i];
@@ -448,8 +488,10 @@ Module.register("SmartMirror-Detection-Simulator", {
 						sendData = [];
 					}
 				}
+				//console.debug(sendData);
 				if (cat == 0) {
 					var payload = { DETECTED_GESTURES: sendData };
+					//console.debug("[Det-Sim] DETECTED_GESTURES: ", payload);
 					this.sendNotification("DETECTED_GESTURES", payload);
 					// {"DETECTED_GESTURES": [{"TrackID": int, "name": string, "w_h": (float, float), "center": (float, float)}]}
 				} else if (cat == 1) {
@@ -459,9 +501,10 @@ Module.register("SmartMirror-Detection-Simulator", {
 				} else if (cat == 2) {
 					var payload = { DETECTED_FACES: sendData };
 					this.sendNotification("DETECTED_FACES", payload);
-					// {"DETECTED_FACES": [{"TrackID": int, "name": string, "w_h": (float, float), "center": (float, float), "id": int, "confidence": float}]}
+					// {"DETECTED_FACES": [{"TrackID": int, "name": string, "w_h": (float, float), "center": (float, float), "ID": int, "confidence": float}]}
 				} else if (cat == 3) {
 					var payload = { RECOGNIZED_PERSONS: sendData };
+					//console.debug(JSON.stringify(payload));
 					this.sendNotification("RECOGNIZED_PERSONS", payload);
 					// {"RECOGNIZED_PERSONS": {int: {"TrackID": int, "name": string, "w_h": [float, float], "center": [float, float]}, "face": {...}, "gestures": [...]}}
 				}
@@ -570,7 +613,7 @@ Module.register("SmartMirror-Detection-Simulator", {
 			w_h: this.fromPixels(w_h),
 			center: this.fromPixels(center),
 			face: {
-				id: 0,
+				id: 1,
 				confidence: 0.2,
 				TrackID: trackid,
 				name: "unknown",
@@ -649,7 +692,7 @@ Module.register("SmartMirror-Detection-Simulator", {
 		if (this.modulesStarted) {
 			var gestures = [];
 			if (this.isPressCtrl) {
-				this.simGestureDetection(0, "flat_right", [200, 200], [this.posX, this.posY]);
+				this.simGestureDetection(1, "flat_right", [200, 200], [this.posX, this.posY]);
 				// this.simObjectDetection(0, "person", [200, 400], [100, 300]);
 				// this.simFaceDetection(0, "unknown", [200, 200], [100, 300], 0, 0.1);
 				gestures = [
@@ -666,7 +709,7 @@ Module.register("SmartMirror-Detection-Simulator", {
 
 			// this.simObjectDetection(0, "person", [400, 400], [210, 210]);
 			// this.simFaceDetection(0, "unknown", [200, 200], [210, 210], 0, 0.2);
-			this.simRecognisedPerson(0, [400, 400], [210, 210], gestures);
+			this.simRecognisedPerson(1, [400, 400], [210, 210], gestures);
 		}
 	},
 });
