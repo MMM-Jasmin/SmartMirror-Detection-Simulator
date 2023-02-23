@@ -88,7 +88,7 @@ Module.register("SmartMirror-Detection-Simulator", {
 			self.wheelScale += event.deltaY * -0.001;
 			self.wheelScale = Math.min(Math.max(-100.0, self.wheelScale), 100.0);
 			if (self.config.wheelDistanceEnabled) {
-				self.wheelDistance += Math.sign(event.deltaY) * 10; // 1cm increments for mouse wheel distance change
+				self.wheelDistance += Math.sign(event.deltaY) * 20; // 2cm increments for mouse wheel distance change
 				self.wheelDistance = Math.min(Math.max(200.0, self.wheelDistance), 4000.0); // min: 20cm, max: 4m
 				// console.debug("wheelDistance = " + self.wheelDistance);
 			}
